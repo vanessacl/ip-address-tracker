@@ -36,8 +36,8 @@ Try the live app at [here](https://[live link]/). Add, edit, delete, and filter 
 
 #### 1. Clone the repository:
 
-git clone https://github.com/vanessacl/ip-address-tracker.git
-cd ip-address-tracker
+- git clone https://github.com/vanessacl/ip-address-tracker.git
+- cd ip-address-tracker
 
 #### 2. Set up the Geo.ipify API key:
 
