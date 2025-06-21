@@ -1,6 +1,5 @@
-const apiKey = 'at_1kZ4QKzUIUqpGuiSUsMqW41HN6L9H'
+const { apiKey } = config
 const spinner = document.getElementById('spinner')
-
 const ipDisplay = document.getElementById('ip')
 const locationDisplay = document.getElementById('location')
 const timezoneDisplay = document.getElementById('timezone')
@@ -31,7 +30,11 @@ function toggleSpinner(show) {
 function initMap(lat = 0, lng = 0) {
   if (map) {
     map.setView([lat, lng], 13)
-    marker.setLatLng([lat, lng])
+    if (marker) {
+      marker.setLatLng([lat, lng])
+    } else {
+      marker = L.marker([lat, lng]).addTo(map)
+    }
   } else {
     map = L.map('map').setView([lat, lng], 13)
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -39,14 +42,13 @@ function initMap(lat = 0, lng = 0) {
       attribution:
         '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map)
-    var marker = L.marker([lat, lng]).addTo(map) //add marker to map
+    marker = L.marker([lat, lng]).addTo(map) //add marker to map
   }
 }
 
 //---------- Fetch and Update ----------//
 async function fetchIPData(input = '') {
   input = String(input || '').trim()
-
   let query = ''
 
   // Inline helper: resolve domain to IP using Google's DNS
@@ -77,14 +79,17 @@ async function fetchIPData(input = '') {
 
     if (isValidIP(input)) {
       query = `&ipAddress=${input}`
-    } else {
+    } else if (isLikelyDomain(input)) {
       const resolvedIP = await resolveDomainToIP(input)
       if (!resolvedIP || !isValidIP(resolvedIP)) {
         alert('Could not resolve domain to a valid IP.')
         return
       }
       query = `&ipAddress=${resolvedIP}`
-      console.log('Resolved Ip:', resolvedIP)
+      console.log('Resolved IP:', resolvedIP)
+    } else {
+      alert('Invalid IP or domain format.')
+      return
     }
   }
 
@@ -93,9 +98,14 @@ async function fetchIPData(input = '') {
   toggleSpinner(true)
   try {
     const res = await fetch(url)
+    if (!res.ok) throw new Error('API request failed')
     const data = await res.json()
 
-    if (!data.location || typeof data.location.lat === 'undefined') {
+    if (
+      !data.location ||
+      typeof data.location.lat === 'undefined' ||
+      typeof data.location.lng === 'undefined'
+    ) {
       alert('Could not resolve location from the response.')
       return
     }
@@ -103,7 +113,7 @@ async function fetchIPData(input = '') {
     updateInfo(data)
   } catch (err) {
     alert('Failed to fetch IP/domain info.')
-    console.error(err)
+    console.error('Fetch error:', err)
   } finally {
     toggleSpinner(false)
   }
@@ -115,10 +125,16 @@ function updateInfo(data) {
   locationDisplay.textContent = `${location.city || 'N/A'}, ${
     location.region || ''
   }`
-  timezoneDisplay.textContent = `UTC ${location.timezone || ''}`
+  timezoneDisplay.textContent = `UTC ${location.timezone || 'N/A'}`
   ispDisplay.textContent = isp || 'N/A'
 
-  initMap(location.lat, location.lng)
+  // Ensure valid coordinates before updating map
+  if (typeof location.lat === 'number' && typeof location.lng === 'number') {
+    initMap(location.lat, location.lng)
+    if (marker) {
+      marker.bindPopup(`Location: ${location.city || 'Unknown'}`).openPopup()
+    }
+  }
 }
 
 //---------- Event Listeners ----------//
@@ -135,5 +151,6 @@ ipInput.addEventListener('keypress', (e) => {
   }
 })
 
-//---------- Load user's IP data on start ----------//
-fetchIPData()
+//---------- Initialize map and load user's IP data on start ----------//
+initMap() // Initialize map with default coordinates
+fetchIPData() // Fetch user's IP data on load

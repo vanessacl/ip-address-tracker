@@ -1,0 +1,15 @@
+# Sensitive files
+config.js
+
+# Node.js dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Editor and OS files
+.DS_Store
+*.log
+.vscode/
+.idea/
