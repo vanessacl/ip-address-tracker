@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IP Address Tracker</title>
+  <link rel="stylesheet" href="./css/index.css">
+  <link rel="stylesheet" href="./libs/leaflet/leaflet.css"/>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>IP Address Tracker</h1>
+      <div class="search-bar">
+        <input type="text" id="ip-input" placeholder="Search for any IP address or domain">
+        <button id="search-btn"></button>
+      </div>
+    </header>
+    
+    <div class="info-panel">
+      <div class="info-panel__item">
+        <div class="item-content">
+          <span>IP Address</span>
+          <p id="ip"></p>
+        </div>        
+      </div>
+      <div class="info-panel__item">
+        <div class="divider"></div>
+        <div class="item-content">
+          <span>Location</span>
+          <p id="location"></p>
+        </div>        
+      </div>
+      <div class="info-panel__item">
+        <div class="divider"></div>
+        <div class="item-content">
+          <span>Timezone</span>
+          <p id="timezone"></p>
+        </div>        
+      </div>
+      <div class="info-panel__item">
+        <div class="divider"></div>
+        <div class="item-content">
+          <span>ISP</span>
+          <p id="isp"></p>
+        </div>        
+      </div>
+    </div>
+
+    <div id="map"></div>
+    <div id="spinner" class="spinner hidden"></div>
+  </div>
+
+  <script src="./libs/leaflet/leaflet.js"></script>
+  <script src="./js/script.js"></script>
+</body>
+</html>
