@@ -69,7 +69,7 @@ async function fetchIPData(input = '') {
 
   toggleSpinner(true)
   try {
-    const res = await fetch(url)
+    const res = await fetch(url, { mode: 'cors' }) // Explicitly set CORS mode
     if (!res.ok)
       throw new Error(
         `Request failed with status ${res.status}: ${res.statusText}`
