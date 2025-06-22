@@ -115,17 +115,18 @@ async function fetchIPData(input = '') {
     }
   }
 
-  const url = `https://geo.ipify.org/api/v2/country,city?apiKey=${apiKey}${query}`
+  const url = `/api/get-ip-data${
+    input ? `?ip=${encodeURIComponent(input)}` : ''
+  }`
   console.log('Fetching from URL:', url)
 
   toggleSpinner(true)
   try {
     const res = await fetch(url)
-    if (!res.ok) {
+    if (!res.ok)
       throw new Error(
-        `API request failed with status ${res.status}: ${res.statusText}`
+        `Request failed with status ${res.status}: ${res.statusText}`
       )
-    }
     const data = await res.json()
     console.log('API Response:', data)
 
