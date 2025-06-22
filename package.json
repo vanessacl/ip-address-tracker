@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/vanessacl/ip-address-tracker/issues"
   },
-  "homepage": "https://github.com/vanessacl/ip-address-tracker#readme"
+  "homepage": "https://github.com/vanessacl/ip-address-tracker#readme",
+  "dependencies": {
+    "dotenv": "^16.5.0"
+  }
 }
