@@ -1,11 +1,3 @@
-const { apiKey } = window.env || {}
-if (!apiKey) {
-  console.error(
-    'Error: API key is missing. Please ensure .env is set or build.js has run.'
-  )
-  alert('Configuration error: API key is missing. Check .env or rebuild.')
-  throw new Error('API key not loaded')
-}
 const spinner = document.getElementById('spinner')
 const ipDisplay = document.getElementById('ip')
 const locationDisplay = document.getElementById('location')
@@ -70,51 +62,6 @@ function initMap(lat = 0, lng = 0) {
 
 //---------- Fetch and Update ----------//
 async function fetchIPData(input = '') {
-  input = String(input || '').trim()
-  let query = ''
-
-  // Inline helper: resolve domain to IP using Google's DNS
-  async function resolveDomainToIP(domain) {
-    try {
-      const res = await fetch(
-        `https://dns.google/resolve?name=${domain}&type=A`
-      )
-      const data = await res.json()
-      return data.Answer?.[0]?.data || null
-    } catch (err) {
-      console.error('DNS resolution failed:', err)
-      return null
-    }
-  }
-
-  // Input type handling
-  if (input) {
-    if (input.includes(':')) {
-      alert('IPv6 not supported in this demo. Try IPv4 or a domain.')
-      return
-    }
-
-    if (isPrivateIP(input)) {
-      alert('Private IP addresses like 10.x.x.x cannot be geolocated.')
-      return
-    }
-
-    if (isValidIP(input)) {
-      query = `&ipAddress=${input}`
-    } else if (isLikelyDomain(input)) {
-      const resolvedIP = await resolveDomainToIP(input)
-      if (!resolvedIP || !isValidIP(resolvedIP)) {
-        alert('Could not resolve domain to a valid IP.')
-        return
-      }
-      query = `&ipAddress=${resolvedIP}`
-      console.log('Resolved IP:', resolvedIP)
-    } else {
-      alert('Invalid IP or domain format.')
-      return
-    }
-  }
-
   const url = `/api/get-ip-data${
     input ? `?ip=${encodeURIComponent(input)}` : ''
   }`
