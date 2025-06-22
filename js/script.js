@@ -69,24 +69,25 @@ async function fetchIPData(input = '') {
 
   toggleSpinner(true)
   try {
-    const res = await fetch(url, { mode: 'cors' }) // Explicitly set CORS mode
+    const res = await fetch(url, { mode: 'cors' })
     if (!res.ok)
       throw new Error(
         `Request failed with status ${res.status}: ${res.statusText}`
       )
-    const data = await res.json()
-    console.log('API Response:', data)
+    const data = await res.json() // Parses { statusCode: 200, body: "..." }
+    const geoData = JSON.parse(data.body) // Extract and parse the body field
+    console.log('API Response (parsed):', geoData)
 
     if (
-      !data.location ||
-      typeof data.location.lat === 'undefined' ||
-      typeof data.location.lng === 'undefined'
+      !geoData.location ||
+      typeof geoData.location.lat === 'undefined' ||
+      typeof geoData.location.lng === 'undefined'
     ) {
       alert('Could not resolve location from the response.')
       return
     }
 
-    updateInfo(data)
+    updateInfo(geoData) // Pass the parsed Geo.ipify data
   } catch (err) {
     alert(`Failed to fetch IP/domain info: ${err.message}`)
     console.error('Fetch error:', err)
