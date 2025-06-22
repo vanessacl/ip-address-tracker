@@ -70,13 +70,19 @@ async function fetchIPData(input = '') {
   toggleSpinner(true)
   try {
     const res = await fetch(url, { mode: 'cors' })
+    console.log('Fetch response status:', res.status)
+    console.log('Fetch response text:', await res.text()) // Log raw response
     if (!res.ok)
       throw new Error(
         `Request failed with status ${res.status}: ${res.statusText}`
       )
-    const data = await res.json() // Parses { statusCode: 200, body: "..." }
-    const geoData = JSON.parse(data.body) // Extract and parse the body field
-    console.log('API Response (parsed):', geoData)
+    const data = await res.json()
+    console.log('Raw data from response:', data) // Log the parsed data
+    if (!data.body) {
+      throw new Error('No body in response from function')
+    }
+    const geoData = JSON.parse(data.body)
+    console.log('Parsed Geo Data:', geoData)
 
     if (
       !geoData.location ||
@@ -87,7 +93,7 @@ async function fetchIPData(input = '') {
       return
     }
 
-    updateInfo(geoData) // Pass the parsed Geo.ipify data
+    updateInfo(geoData)
   } catch (err) {
     alert(`Failed to fetch IP/domain info: ${err.message}`)
     console.error('Fetch error:', err)

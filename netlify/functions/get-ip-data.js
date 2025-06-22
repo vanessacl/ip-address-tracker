@@ -10,7 +10,7 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({ error: 'API key not configured' }),
     }
   }
-  console.log('Using API key:', apiKey.substring(0, 5) + '...') // Log partial key for debugging
+  console.log('Using API key:', apiKey.substring(0, 5) + '...')
 
   const ip = event.queryStringParameters?.ip || ''
   const url = `https://geo.ipify.org/api/v2/country,city?apiKey=${apiKey}${
@@ -20,15 +20,16 @@ exports.handler = async (event, context) => {
 
   try {
     const response = await fetch(url)
-    if (!response.ok)
+    if (!response.ok) {
       throw new Error(
         `Geo.ipify API failed: ${response.status} ${response.statusText}`
       )
+    }
     const data = await response.json()
     console.log('Geo.ipify response:', JSON.stringify(data))
     return {
       statusCode: 200,
-      body: JSON.stringify(data),
+      body: JSON.stringify(data), // Ensure data is stringified
     }
   } catch (error) {
     console.error('Fetch error:', error.message)
