@@ -1,7 +1,7 @@
 # IP Address Tracker
 
 <p align="center">
-  <img src="src/images/screenshot.png" width= "450">
+  <img src="assets/images/Screenshot.png" width= "450">
 </p>
 
 ## Overview
