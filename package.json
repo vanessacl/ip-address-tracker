@@ -5,7 +5,7 @@
   "main": "config.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "node build.js",
+    "build": "echo 'No build step needed for static site'",
     "start": "http-server"
   },
   "repository": {
@@ -18,8 +18,5 @@
   "bugs": {
     "url": "https://github.com/vanessacl/ip-address-tracker/issues"
   },
-  "homepage": "https://github.com/vanessacl/ip-address-tracker#readme",
-  "dependencies": {
-    "dotenv": "^16.5.0"
-  }
+  "homepage": "https://github.com/vanessacl/ip-address-tracker#readme"
 }
