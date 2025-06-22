@@ -78,12 +78,14 @@ async function fetchIPData(input = '') {
     const data = await res.json()
     console.log('Raw data from response:', data)
 
-    if (!data.body) {
+    // Check if body exists and is a string, then parse it
+    if (!data.body || typeof data.body !== 'string') {
       throw new Error(
-        'No body in response from function. Response: ' + JSON.stringify(data)
+        'Invalid or missing body in response from function. Response: ' +
+          JSON.stringify(data)
       )
     }
-    const geoData = JSON.parse(data.body)
+    const geoData = JSON.parse(data.body) // Parse the stringified body
     console.log('Parsed Geo Data:', geoData)
 
     if (
