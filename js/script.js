@@ -62,7 +62,7 @@ function initMap(lat = 0, lng = 0) {
 
 //---------- Fetch and Update ----------//
 async function fetchIPData(input = '') {
-  const url = `/api/get-ip-data${
+  const url = `/.netlify/functions/get-ip-data${
     input ? `?ip=${encodeURIComponent(input)}` : ''
   }`
   console.log('Fetching from URL:', url)
