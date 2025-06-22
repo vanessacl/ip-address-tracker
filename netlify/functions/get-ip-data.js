@@ -21,15 +21,19 @@ exports.handler = async (event, context) => {
   try {
     const response = await fetch(url)
     if (!response.ok) {
+      const errorText = await response.text() // Capture error details
       throw new Error(
-        `Geo.ipify API failed: ${response.status} ${response.statusText}`
+        `Geo.ipify API failed: ${response.status} ${response.statusText} - ${errorText}`
       )
     }
     const data = await response.json()
     console.log('Geo.ipify response:', JSON.stringify(data))
+    if (!data || Object.keys(data).length === 0) {
+      throw new Error('Empty or invalid response from Geo.ipify')
+    }
     return {
       statusCode: 200,
-      body: JSON.stringify(data), // Ensure data is stringified
+      body: JSON.stringify(data),
     }
   } catch (error) {
     console.error('Fetch error:', error.message)
