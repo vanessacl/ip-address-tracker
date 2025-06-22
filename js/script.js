@@ -1,12 +1,9 @@
-// Load environment variables (for local development with dotenv)
-const apiKey = process.env.API_KEY || (window.env && window.env.API_KEY) || ''
+const { apiKey } = window.env || {}
 if (!apiKey) {
   console.error(
-    'Error: API key is missing. Please set API_KEY in .env file or Netlify environment variables.'
+    'Error: API key is missing. Please ensure .env is set or build.js has run.'
   )
-  alert(
-    'Configuration error: API key is missing. Check .env or Netlify settings.'
-  )
+  alert('Configuration error: API key is missing. Check .env or rebuild.')
   throw new Error('API key not loaded')
 }
 const spinner = document.getElementById('spinner')

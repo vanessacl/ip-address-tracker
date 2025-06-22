@@ -1,4 +1,4 @@
-window.env = {"API_KEY":"at_1kZ4QKzUIUqpGuiSUsMqW41HN6L9H"};
+window.env = { apiKey: "at_1kZ4QKzUIUqpGuiSUsMqW41HN6L9H" };
 // Load environment variables (for local development with dotenv)
 const apiKey = process.env.API_KEY || (window.env && window.env.API_KEY) || ''
 if (!apiKey) {
