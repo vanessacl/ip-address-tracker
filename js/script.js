@@ -70,14 +70,14 @@ async function fetchIPData(input = '') {
   toggleSpinner(true)
   try {
     const res = await fetch(url, { mode: 'cors' })
-    console.log('Fetch response status:', res.status)
-    console.log('Fetch response text:', await res.text()) // Log raw response
+    console.log('Fetch response status:', res.status) // Keep status log for debugging
     if (!res.ok)
       throw new Error(
         `Request failed with status ${res.status}: ${res.statusText}`
       )
-    const data = await res.json()
+    const data = await res.json() // Single call to parse JSON
     console.log('Raw data from response:', data) // Log the parsed data
+
     if (!data.body) {
       throw new Error('No body in response from function')
     }
