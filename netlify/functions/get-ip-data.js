@@ -19,18 +19,19 @@ exports.handler = async (event, context) => {
   console.log('Fetching from:', url)
 
   try {
-    const response = await fetch(url)
+    const response = await fetch(url, { timeout: 10000 }) // Add timeout of 10 seconds
+    const responseText = await response.text() // Capture raw response
+    console.log('Geo.ipify raw response:', responseText)
     if (!response.ok) {
-      const errorText = await response.text() // Capture error details
       throw new Error(
-        `Geo.ipify API failed: ${response.status} ${response.statusText} - ${errorText}`
+        `Geo.ipify API failed: ${response.status} ${response.statusText} - ${responseText}`
       )
     }
-    const data = await response.json()
-    console.log('Geo.ipify response:', JSON.stringify(data))
+    const data = JSON.parse(responseText) // Parse only if status is ok
     if (!data || Object.keys(data).length === 0) {
       throw new Error('Empty or invalid response from Geo.ipify')
     }
+    console.log('Geo.ipify parsed response:', JSON.stringify(data))
     return {
       statusCode: 200,
       body: JSON.stringify(data),
@@ -38,7 +39,7 @@ exports.handler = async (event, context) => {
   } catch (error) {
     console.error('Fetch error:', error.message)
     return {
-      statusCode: 500,
+      statusCode: 502, // Use 502 to match the observed error
       body: JSON.stringify({ error: error.message }),
     }
   }
