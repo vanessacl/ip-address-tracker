@@ -1,3 +1,12 @@
+// Ensure config is loaded
+if (typeof config === 'undefined' || !config.apiKey) {
+  console.error(
+    'Error: config.js is missing or invalid. Please ensure config.js exists with a valid apiKey.'
+  )
+  alert('Configuration error: API key is missing. Check config.js.')
+  throw new Error('Config not loaded')
+}
+
 const { apiKey } = config
 const spinner = document.getElementById('spinner')
 const ipDisplay = document.getElementById('ip')
@@ -7,11 +16,14 @@ const ispDisplay = document.getElementById('isp')
 const searchBtn = document.getElementById('search-btn')
 const ipInput = document.getElementById('ip-input')
 
-let map, marker
+let map = null // Initialize as null to force reinitialization on refresh
+let marker = null
 
 //---------- Utility Functions ----------//
 function isValidIP(str) {
-  return /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(\1\.){2}\1$/.test(str)
+  return /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+    str
+  )
 }
 
 function isPrivateIP(ip) {
@@ -28,21 +40,33 @@ function toggleSpinner(show) {
 
 //---------- Map Handling ----------//
 function initMap(lat = 0, lng = 0) {
-  if (map) {
-    map.setView([lat, lng], 13)
-    if (marker) {
-      marker.setLatLng([lat, lng])
-    } else {
+  try {
+    if (!map) {
+      map = L.map('map').setView([lat, lng], 13)
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution:
+          '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(map)
       marker = L.marker([lat, lng]).addTo(map)
+      console.log(
+        'Map initialized with lat:',
+        lat,
+        'lng:',
+        lng,
+        'Marker:',
+        marker
+      )
+    } else {
+      map.setView([lat, lng], 13)
+      if (marker) {
+        marker.setLatLng([lat, lng])
+      } else {
+        marker = L.marker([lat, lng]).addTo(map)
+      }
     }
-  } else {
-    map = L.map('map').setView([lat, lng], 13)
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution:
-        '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    }).addTo(map)
-    marker = L.marker([lat, lng]).addTo(map) //add marker to map
+  } catch (error) {
+    console.error('Map initialization error:', error)
   }
 }
 
@@ -94,12 +118,14 @@ async function fetchIPData(input = '') {
   }
 
   const url = `https://geo.ipify.org/api/v2/country,city?apiKey=${apiKey}${query}`
+  console.log('Fetching from URL:', url) // Debug API call
 
   toggleSpinner(true)
   try {
     const res = await fetch(url)
-    if (!res.ok) throw new Error('API request failed')
+    if (!res.ok) throw new Error(`API request failed with status ${res.status}`)
     const data = await res.json()
+    console.log('API Response:', data) // Debug API response
 
     if (
       !data.location ||
@@ -112,7 +138,7 @@ async function fetchIPData(input = '') {
 
     updateInfo(data)
   } catch (err) {
-    alert('Failed to fetch IP/domain info.')
+    alert(`Failed to fetch IP/domain info: ${err.message}`)
     console.error('Fetch error:', err)
   } finally {
     toggleSpinner(false)
@@ -120,20 +146,29 @@ async function fetchIPData(input = '') {
 }
 
 function updateInfo(data) {
-  const { ip, isp, location } = data
-  ipDisplay.textContent = ip || 'N/A'
-  locationDisplay.textContent = `${location.city || 'N/A'}, ${
-    location.region || ''
-  }`
-  timezoneDisplay.textContent = `UTC ${location.timezone || 'N/A'}`
-  ispDisplay.textContent = isp || 'N/A'
+  try {
+    const { ip, isp, location } = data
+    ipDisplay.textContent = ip || 'N/A'
+    locationDisplay.textContent = `${location.city || 'N/A'}, ${
+      location.region || ''
+    }`
+    timezoneDisplay.textContent = `UTC ${location.timezone || 'N/A'}`
+    ispDisplay.textContent = isp || 'N/A'
 
-  // Ensure valid coordinates before updating map
-  if (typeof location.lat === 'number' && typeof location.lng === 'number') {
-    initMap(location.lat, location.lng)
-    if (marker) {
-      marker.bindPopup(`Location: ${location.city || 'Unknown'}`).openPopup()
+    if (typeof location.lat === 'number' && typeof location.lng === 'number') {
+      initMap(location.lat, location.lng)
+      if (marker) {
+        marker.bindPopup(`Location: ${location.city || 'Unknown'}`).openPopup()
+      } else {
+        console.warn('Marker is undefined, reinitializing')
+        marker = L.marker([location.lat, location.lng]).addTo(map)
+        marker.bindPopup(`Location: ${location.city || 'Unknown'}`).openPopup()
+      }
+    } else {
+      console.error('Invalid location coordinates:', location)
     }
+  } catch (error) {
+    console.error('Update info error:', error)
   }
 }
 
@@ -152,5 +187,7 @@ ipInput.addEventListener('keypress', (e) => {
 })
 
 //---------- Initialize map and load user's IP data on start ----------//
-initMap() // Initialize map with default coordinates
-fetchIPData() // Fetch user's IP data on load
+window.addEventListener('load', () => {
+  initMap()
+  fetchIPData()
+})

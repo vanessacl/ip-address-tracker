@@ -3,12 +3,11 @@
   display: flex;    
   justify-content: space-between;
   padding: 32px;
-  z-index: 2;
+  z-index: 5;
   position: relative;
   width: 80%;
   max-width:1110px;
-  height: auto;
-  margin: -5% auto 0;
+  height: auto;  
   border-radius: 15px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   font-family: 'Rubik', sans-serif;
@@ -17,13 +16,17 @@
   color: $darkGray;
   line-height: 1.5;
   text-align: center;
+  position: absolute;
+  top: 190px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
 
   @media (max-width: 1023px){
     padding: 24px;
   }
 
-  @media (max-width: 767px){
-    margin: -28% auto 0;
+  @media (max-width: 767px){    
     flex-direction: column;
     align-items: center;
     justify-content: center;

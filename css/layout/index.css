@@ -1,15 +1,14 @@
-body, 
+body,
 html {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
   height: 100%;
   width: 100%;
 }
-
 
 .app {
   text-align: center;
   height: 100vh;
   display: flex;
   flex-direction: column;
-  position: relative;  
-}
+  position: relative;
+}/*# sourceMappingURL=index.css.map */
