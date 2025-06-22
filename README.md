@@ -1,12 +1,12 @@
 # IP Address Tracker
 
 <p align="center">
-  <img src="src/images/[screenshot]" width= "450">
+  <img src="src/images/screenshot.png" width= "450">
 </p>
 
 ## Overview
 
-A front-end application to track and display IP address or domain details, including location, timezone, and ISP, with an interactive map. Built as part of the Frontend Mentor IP Address Tracker challenge, this project emphasizes robust logic and responsive design using vanilla JavaScript and Sass. Deployed live at [live link].
+A front-end application to track and display IP address or domain details, including location, timezone, and ISP, with an interactive map. Built as part of the Frontend Mentor IP Address Tracker challenge, this project emphasizes robust logic and responsive design using vanilla JavaScript and Sass. 
 
 ### Features
 
@@ -28,7 +28,7 @@ A front-end application to track and display IP address or domain details, inclu
 
 ## Demo
 
-Try the live app at [here](https://[live link]/). Add, edit, delete, and filter tasks with smooth animations.
+Try the live app at [here](https://ip-address-tracker-with-js.netlify.app/). Add, edit, delete, and filter tasks with smooth animations.
 
 ## Getting Started
 
