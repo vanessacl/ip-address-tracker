@@ -10,18 +10,18 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({ error: 'API key not configured' }),
     }
   }
-  console.log('Full API key (for debugging):', apiKey) // Log full key to verify
+  console.log('Full API key (for debugging):', apiKey)
 
   const ip = event.queryStringParameters?.ip || ''
   const url = `https://geo.ipify.org/api/v2/country,city?apiKey=${encodeURIComponent(
     apiKey
   )}${ip ? `&ipAddress=${encodeURIComponent(ip)}` : ''}`
-  console.log('Constructed URL:', url) // Log the exact URL being fetched
+  console.log('Constructed URL:', url)
 
   try {
     const response = await fetch(url, {
       timeout: 10000,
-      headers: { 'User-Agent': 'NetlifyFunction/1.0' }, // Add a custom User-Agent
+      headers: { 'User-Agent': 'NetlifyFunction/1.0' },
     })
     const responseText = await response.text()
     console.log('Geo.ipify raw response:', responseText)

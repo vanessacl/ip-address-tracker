@@ -30,6 +30,8 @@ function toggleSpinner(show) {
 
 //---------- Map Handling ----------//
 function initMap(lat = 0, lng = 0) {
+  console.log('lat:', lat)
+  console.log('lng:', lng)
   try {
     if (!map) {
       map = L.map('map').setView([lat, lng], 13)
@@ -62,10 +64,53 @@ function initMap(lat = 0, lng = 0) {
 
 //---------- Fetch and Update ----------//
 async function fetchIPData(input = '') {
-  const url = `/.netlify/functions/get-ip-data${
-    input ? `?ip=${encodeURIComponent(input)}` : ''
-  }`
-  console.log('Fetching from URL:', url)
+  input = String(input || '').trim()
+
+  let query = ''
+
+  // Inline helper: resolve domain to IP using Google's DNS
+  async function resolveDomainToIP(domain) {
+    try {
+      const res = await fetch(
+        `https://dns.google/resolve?name=${domain}&type=A`
+      )
+      const data = await res.json()
+      return data.Answer?.[0]?.data || null
+    } catch (err) {
+      console.error('DNS resolution failed:', err)
+      return null
+    }
+  }
+
+  // Input type handling
+  if (input) {
+    if (input.includes(':')) {
+      alert('IPv6 not supported in this demo. Try IPv4 or a domain.')
+      return
+    }
+
+    if (isPrivateIP(input)) {
+      alert('Private IP addresses like 10.x.x.x cannot be geolocated.')
+      return
+    }
+
+    if (isValidIP(input)) {
+      query = `?ip=${encodeURIComponent(input)}`
+    } else if (isLikelyDomain(input)) {
+      const resolvedIP = await resolveDomainToIP(input)
+      if (!resolvedIP || !isValidIP(resolvedIP)) {
+        alert('Could not resolve domain to a valid IP.')
+        return
+      }
+      query = `?ip=${encodeURIComponent(resolvedIP)}`
+      console.log('Resolved IP:', resolvedIP)
+    } else {
+      alert('Invalid IP or domain format.')
+      return
+    }
+  }
+
+  const url = `/api/get-ip-data${query}`
 
   toggleSpinner(true)
   try {
@@ -78,15 +123,13 @@ async function fetchIPData(input = '') {
     const data = await res.json()
     console.log('Raw data from response:', data)
 
-    // Check if body exists and is a string, then parse it
     if (!data.body || typeof data.body !== 'string') {
       throw new Error(
         'Invalid or missing body in response from function. Response: ' +
           JSON.stringify(data)
       )
     }
-    const geoData = JSON.parse(data.body) // Parse the stringified body
-    console.log('Parsed Geo Data:', geoData)
+    const geoData = JSON.parse(data.body)
 
     if (
       !geoData.location ||
