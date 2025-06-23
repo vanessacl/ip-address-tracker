@@ -123,13 +123,7 @@ async function fetchIPData(input = '') {
     const data = await res.json()
     console.log('Raw data from response:', data)
 
-    if (!data.body || typeof data.body !== 'string') {
-      throw new Error(
-        'Invalid or missing body in response from function. Response: ' +
-          JSON.stringify(data)
-      )
-    }
-    const geoData = JSON.parse(data.body)
+    const geoData = data
 
     if (
       !geoData.location ||
@@ -194,6 +188,5 @@ ipInput.addEventListener('keypress', (e) => {
 
 //---------- Initialize map and load user's IP data on start ----------//
 window.addEventListener('load', () => {
-  initMap()
   fetchIPData()
 })
