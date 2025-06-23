@@ -6,43 +6,50 @@
 
 ## Overview
 
-A front-end application to track and display IP address or domain details, including location, timezone, and ISP, with an interactive map. Built as part of the Frontend Mentor IP Address Tracker challenge, this project emphasizes robust logic and responsive design using vanilla JavaScript and Sass. 
+A simple web application that tracks IP addresses and domains, displaying their geolocation data on a map using the Geo.ipify API.
 
 ### Features
 
-- Search for IP address or domain details using the Geo.ipify API.
-- Display IP address, location (city, region), timezone, and ISP in a clean info panel.
-- Interactive map powered by Leaflet to visualize the IP’s location.
-- Input validation for IPv4 addresses and domains, with private IP detection and domain resolution via Google DNS.
-- Loading spinner for API requests to enhance user experience.
-- Responsive design with Sass, optimized for mobile and desktop.
-- Error handling for invalid inputs, API failures, and unsupported IPv6 addresses.
+- Search for IP addresses or domains to get location details.
+- Display IP address, location (city, region), timezone, and ISP information.
+- Visualize the location on an interactive map using Leaflet.
+- Handle both IPv4 and domain inputs with client-side validation.
+- Responsive design for desktop and mobile.
 
 ### Technologies
 
-- Vanilla JavaScript: For logic, API handling, and DOM manipulation.
-- Sass: For modular, responsive styling compiled to CSS.
-- Leaflet: For rendering the interactive map.
-- Geo.ipify API: For fetching IP and location data.
-- Google DNS API: For resolving domains to IP addresses.
+- HTML5: Structure of the web page.
+- CSS3: Styling with a custom stylesheet (index.css).
+- JavaScript: Client-side logic (script.js) with Leaflet for mapping.
+- Leaflet: Open-source JavaScript library for interactive maps.
+- Geo.ipify API: Provides geolocation data for IPs and domains.
+- Netlify: Hosting and serverless functions for API requests.
+- node-fetch: Used in the Netlify function for HTTP requests.
 
 ## Demo
 
-Try the live app at [here](https://ip-address-tracker-with-js.netlify.app/). Add, edit, delete, and filter tasks with smooth animations.
+Try the live app at [here](https://js-ip-address-tracker.netlify.app/). Add, edit, delete, and filter tasks with smooth animations.
 
 ## Getting Started
+
+### Prerequisites
+
+- Node.js and npm installed for local development (optional).
+- A Geo.ipify API key (stored as an environment variable on Netlify).
 
 ### Installation
 
 #### 1. Clone the repository:
 
 - git clone https://github.com/vanessacl/ip-address-tracker.git
+
+#### 2. Navigate to the project directory:
+
 - cd ip-address-tracker
 
-#### 2. Set up the Geo.ipify API key:
+#### Install dependencies (if running locally):
 
-- Sign up at Geo.ipify to obtain an API key.
-- Replace 'YOUR_GEO_IPIFY_API_KEY' in js/script.js with your API key.
+- npm install
 
 #### 3. Compile Sass:
 
@@ -52,23 +59,40 @@ Try the live app at [here](https://ip-address-tracker-with-js.netlify.app/). Add
 
 - Use a local server (e.g., VS Code Live Server) or open index.html in a browser.
 
+#### 5. Set up the Geo.ipify API key as an environment variable named API_KEY in Netlify.
+
+## Deployment
+
+- Deploy the project to Netlify by connecting your GitHub repository.
+- Ensure the netlify.toml file is included to configure the function and redirect routes.
+- The app will be live at the Netlify-provided URL (e.g., https://your-app.netlify.app).
+
 ## Usage
 
-### 1. Open the app:
+1. Open the app in a web browser.
+2. Enter an IP address (e.g., 8.8.8.8) or domain (e.g., google.com) in the search bar.
+3. lick the search button or press Enter to fetch and display the geolocation data.
+4. The map will update to show the location, with a popup indicating the city.
 
-- Navigate to http://localhost:8080 (or the port provided by your server).
-- The app loads your current IP’s details by default.
+## File Structure
 
-### 2. Search for an IP or domain:
+- index.html: Main HTML structure.
+- css/index.css: Custom styles.
+- js/script.js: Client-side JavaScript logic.
+- netlify/functions/get-ip-data.js: Serverless function to fetch Geo.ipify data.
+- netlify.toml: Netlify configuration.
+- package.json: Project metadata and dependencies.
+- libs/leaflet/: Leaflet library files.
 
-- Enter an IPv4 address (e.g., 8.8.8.8) or domain (e.g., google.com) in the input field.
-- Click the search button or press Enter to fetch details.
-- View the IP, location, timezone, ISP, and map marker updated with the results.
+## Contributing
 
-### 3. Interact with the map:
+Feel free to submit issues or pull requests on the GitHub repository.
 
-- Zoom or pan the map to explore the location.
-- Click the marker to see the city in a popup.
+## Acknowledgments
+
+- Geo.ipify for the geolocation API.
+- Leaflet for the mapping library.
+- Netlify for hosting and serverless functions.
 
 ## License
 
