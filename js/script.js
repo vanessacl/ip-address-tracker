@@ -30,8 +30,6 @@ function toggleSpinner(show) {
 
 //---------- Map Handling ----------//
 function initMap(lat = 0, lng = 0) {
-  console.log('lat:', lat)
-  console.log('lng:', lng)
   try {
     if (!map) {
       map = L.map('map').setView([lat, lng], 13)

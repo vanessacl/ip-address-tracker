@@ -226,6 +226,7 @@ header .search-bar #search-btn:focus {
   font-weight: 700;
   letter-spacing: 1.75px;
   opacity: 0.4;
+  text-transform: uppercase;
 }
 .info-panel__item .item-content p {
   font-family: "Rubik", sans-serif;
